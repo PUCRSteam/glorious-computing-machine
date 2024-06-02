@@ -16,3 +16,6 @@ chmod +x $BASE_DIR/target/usr/bin/monitor.sh
 
 # setting up the httpServer for the system monitor
 i686-linux-gcc $BASE_DIR/../custom-scripts/httpServer/httpServer.c -O2 -o $BASE_DIR/../output/target/usr/bin/httpServer
+
+# simple driver
+make -C $BASE_DIR/../modules/simple_driver/
