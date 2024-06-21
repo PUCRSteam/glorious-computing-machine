@@ -136,27 +136,19 @@ int main(int argc, char** argv) {
         printf("%c", buffer[i]);
 
         // conta as ocorrencias de cada caractere
-        if (buffer[i] >= 'A' && buffer[i] <= 'Z') {
-            counts[buffer[i] - 'A']++;
-        }
+        if (buffer[i] >= 'A' && buffer[i] <= 'Z') counts[buffer[i] - 'A']++;
 
         // conta o numero de mudancas de caractere no buffer
-        if (i > 0 && buffer[i] != buffer[i - 1]) {
-            changes[buffer[i] - 'A']++;
-        }
+        if (buffer[i] != buffer[i - 1]) changes[buffer[i] - 'A']++;
     }
     printf("\n");
 
     // printa numero de ocorrencias e mudancas
-    printf("Ocorrencias:\n");
     for (int i = 0; i < 26; i++) {
-        if (counts[i] > 0) {
-            printf("%c = %d (mudancas: %d)\n", 'A' + i, counts[i], changes[i]);
-        }
+        if (counts[i] > 0) printf("%c = %d (mudancas: %d)\n", 'A' + i, counts[i], changes[i]);
     }
 
     // limpa o buffer
     free(buffer);
-
     return 0;
 }
