@@ -57,7 +57,9 @@ void* printaCharacter(void* arg) {
     pthread_exit(NULL);
 }
 
-int main(int argc, char** argv) {    
+int main(int argc, char** argv) {
+
+    
 
     if (argc != 3) {
         fprintf(stderr, "Usage: %s <buffer_size> <num_threads>\n", argv[0]);
@@ -106,17 +108,32 @@ int main(int argc, char** argv) {
         }
         // cria thread
         *thread_char = 'A' + i;
-        // Escolhe a politica de escalonamento para a thread
-
-        struct sched_param param;
-        // pthread_attr_getschedpolicy()
-        pthread_setschedparam(pthread_self(), SCHED_RR, &param);
-
-        //pthread_setschedparam(pthread_self(), SCHED_OTHER, &param);
         if (pthread_create(&threads[i], NULL, printaCharacter, thread_char) != 0) {
             perror("Failed to create thread");
             return 1;
         }
+
+        // Escolhe a politica de escalonamento para a thread
+        struct sched_param param;
+        param.sched_priority = sched_get_priority_max(SCHED_RR); // define a prioridade máxima
+
+        if (pthread_setschedparam(threads[i], SCHED_RR, &param) != 0) {
+            perror("Failed to set scheduling policy");
+            return 1;
+        }
+
+        // Verifica o escalonamento da thread
+        int policy;
+        if (pthread_getschedparam(threads[i], &policy, &param) != 0) {
+            perror("Failed to get scheduling policy");
+            return 1;
+        }
+        printf("Thread %d: policy=%s, priority=%d\n", i, 
+               (policy == SCHED_RR) ? "SCHED_RR" : 
+               (policy == SCHED_FIFO) ? "SCHED_FIFO" : 
+               (policy == SCHED_OTHER) ? "SCHED_OTHER" : "UNKNOWN", 
+               param.sched_priority);
+
     }
 
     // espera todas as threads finalizarem
